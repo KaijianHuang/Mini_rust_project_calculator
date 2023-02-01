@@ -43,6 +43,8 @@ fn main() {
 }
 ```
 
+This program prompts the user to enter the number of legs and heads, reads the input as a string, uses the trim method to remove any leading or trailing whitespace, and the parse method to convert the string to an unsigned 32-bit integer. Then it uses two nested loops to iterate through all possible values of x and y, checks if the equation for legs (4x + 2y = legs) is true for that pair of values and also checks if x+y equals to heads, if this condition is true, then it prints the number of rabbits and chickens and exits the function. If it doesn't find a valid pair of values, it prints "Invalid number of legs and heads: {} {}" with legs and heads as the arguments.
+
 
 
 
