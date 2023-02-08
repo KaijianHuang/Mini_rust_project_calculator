@@ -23,27 +23,20 @@ enum Commands {
 use std::io;
 
 fn main() {
-    println!("Please enter the number of legs:");
-    let mut legs = String::new();
-    io::stdin()
-        .read_line(&mut legs)
-        .expect("Failed to read input");
-    let legs = legs.trim().parse().expect("Please enter a valid number");
-
-    println!("Please enter the number of heads:");
-    let mut heads = String::new();
-    io::stdin()
-        .read_line(&mut heads)
-        .expect("Failed to read input");
-    let heads = heads.trim().parse().expect("Please enter a valid number");
-    
-    for x in 0..=legs/4 {
-        for y in 0..=(legs-4*x)/2 {
-            if 4*x + 2*y == legs && x+y==heads {
-                println!("There are {} rabbits and {} chickens in the cage.", x, y);
-                return;
-            }
+    fn fibonacci(n: u32) -> u32 {
+        let mut a = 0;
+        let mut b = 1;
+        for _ in 0..n {
+            let c = a + b;
+            a = b;
+            b = c;
         }
+        a
     }
-    println!("Invalid number of legs and heads: {} {}", legs, heads);
+
+    println!("Enter the number n:");
+    let mut n_str = String::new();
+    io::stdin().read_line(&mut n_str).unwrap();
+    let n: u32 = n_str.trim().parse().unwrap();
+    println!("The {}-th Fibonacci number is {}", n, fibonacci(n));
 }
