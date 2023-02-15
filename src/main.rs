@@ -1,56 +1,50 @@
-//A command-line tool that plays Marco Polo
-use clap::Parser;
-#[derive(Parser)]
-#[clap(version = "1.0", author = "Noah Gift", about = "A Marco Polo game.")]
-struct Cli {
-    #[clap(subcommand)]
-    command: Option<Commands>,
-}
-
-#[derive(Parser)]
-enum Commands {
-    #[clap(version = "1.0", author = "Noah Gift", about = "A Marco Polo game.")]
-    Marco {
-        #[clap(short, long)]
-        name: String,
-    },
-}
-
-// This is the main function
-// hello::marco_polo(&name)
-
-
-use std::io::{self, Write};
 use serde::Deserialize;
+use std::io::{self, Write};
+use reqwest;
 
-#[derive(Deserialize)]
-struct Weather {
-    main: Main,
+#[derive(Deserialize, Debug)]
+struct CurrentWeatherResponse {
+    current: Option<CurrentWeather>,
 }
 
-#[derive(Deserialize)]
-struct Main {
-    temp: f32,
+#[derive(Deserialize, Debug)]
+struct CurrentWeather {
+    temp_c: f32,
+    condition: Condition,
 }
 
-fn main() {
-    // Ask the user for their location
-    print!("Enter your city: ");
-    io::stdout().flush().unwrap();
-    let mut city = String::new();
-    io::stdin().read_line(&mut city).unwrap();
+#[derive(Deserialize, Debug)]
+struct Condition {
+    text: String,
+}
 
-    // Build the URL for the OpenWeatherMap API
-    let api_key = "your-api-key";
-    let url = format!("https://api.openweathermap.org/data/2.5/weather?q={}&appid={}&units=metric", city.trim(), api_key);
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let api_key = "1519edbf82994ba980874948231502";
+    
+    // Take user input for city and country
+    print!("Enter the city name: ");
+    io::stdout().flush()?;
+    let mut city_name = String::new();
+    io::stdin().read_line(&mut city_name)?;
+    city_name = city_name.trim().to_string();
+    
+    print!("Enter the country code: ");
+    io::stdout().flush()?;
+    let mut country_code = String::new();
+    io::stdin().read_line(&mut country_code)?;
+    country_code = country_code.trim().to_string();
 
-    // Make an HTTP request to the OpenWeatherMap API
-    let response = reqwest::blocking::get(&url).unwrap();
-    let body = response.text().unwrap();
+    let url = format!("http://api.weatherapi.com/v1/current.json?key={}&q={},{}", api_key, city_name, country_code);
+    let response = reqwest::blocking::get(&url)?.json::<CurrentWeatherResponse>()?;
 
-    // Parse the JSON response from the API
-    let weather: Weather = serde_json::from_str(&body).unwrap();
+    match response.current {
+        Some(weather) => {
+            println!("The current temperature in {} is {}°C, and the weather condition is {}.", city_name, weather.temp_c, weather.condition.text);
+        },
+        None => {
+            println!("No weather data found for the given location.");
+        }
+    }
 
-    // Display the current temperature to the user
-    println!("The current temperature in {} is {:.1}°C", city.trim(), weather.main.temp);
+    Ok(())
 }
