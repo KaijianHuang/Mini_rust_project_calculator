@@ -20,23 +20,37 @@ enum Commands {
 // hello::marco_polo(&name)
 
 
-use std::io;
+use std::io::{self, Write};
+use serde::Deserialize;
+
+#[derive(Deserialize)]
+struct Weather {
+    main: Main,
+}
+
+#[derive(Deserialize)]
+struct Main {
+    temp: f32,
+}
 
 fn main() {
-    fn fibonacci(n: u32) -> u32 {
-        let mut a = 0;
-        let mut b = 1;
-        for _ in 0..n {
-            let c = a + b;
-            a = b;
-            b = c;
-        }
-        a
-    }
+    // Ask the user for their location
+    print!("Enter your city: ");
+    io::stdout().flush().unwrap();
+    let mut city = String::new();
+    io::stdin().read_line(&mut city).unwrap();
 
-    println!("Enter the number n:");
-    let mut n_str = String::new();
-    io::stdin().read_line(&mut n_str).unwrap();
-    let n: u32 = n_str.trim().parse().unwrap();
-    println!("The {}-th Fibonacci number is {}", n, fibonacci(n));
+    // Build the URL for the OpenWeatherMap API
+    let api_key = "your-api-key";
+    let url = format!("https://api.openweathermap.org/data/2.5/weather?q={}&appid={}&units=metric", city.trim(), api_key);
+
+    // Make an HTTP request to the OpenWeatherMap API
+    let response = reqwest::blocking::get(&url).unwrap();
+    let body = response.text().unwrap();
+
+    // Parse the JSON response from the API
+    let weather: Weather = serde_json::from_str(&body).unwrap();
+
+    // Display the current temperature to the user
+    println!("The current temperature in {} is {:.1}°C", city.trim(), weather.main.temp);
 }
