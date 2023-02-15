@@ -1,56 +1,30 @@
-# rust-new-project-template
+#Rust WeatherAPI Program
 
-All Rust projects can follow this pattern:
+This program is a simple Rust program that fetches the current weather data for a specified location using the WeatherAPI service. The user inputs the city name and country code, and the program makes a request to the WeatherAPI service to get the current weather data for that location.
 
-1.  Create a new repo using Rust New Project Template:  https://github.com/noahgift/rust-new-project-template
-2.  Create a new Codespaces and use it
-3.  Use `main.rs` to call handle CLI and use `lib.rs` to handle logic and import `clap` in `Cargo.toml` as shown in this project.
-4.  Use `cargo init --name 'hello' or whatever you want to call your project.
-5.  Put your "ideas" in as comments in rust to seed GitHub Copilot, i.e //build add function
-6.  Run `make format` i.e. `cargo format`
-7.  Run `make lint` i.e. `cargo clippy --quiet`
-8.  Run project:  `cargo run -- --help`
-9.  Push your changes to allow GitHub Actions to: `format` check, `lint` check, and other actions like binary deploy.
+Prerequisites
+To run this program, you need to have Rust and Cargo installed on your system. You also need to sign up for a free API key on the WeatherAPI website in order to use their service.
 
+Usage
+Clone this repository to your local machine.
 
-This pattern is a new emerging pattern and is ideal for systems programming in Rust.
+In a terminal window, navigate to the cloned directory.
 
-![1 1-prompt-engineering](https://user-images.githubusercontent.com/58792/213335664-f459e6ac-018a-4ccf-9563-bbe6d49d72d1.png)
+Build the program by running the following command:
 
+Copy code
+cargo build
+Run the program by running the following command:
 
-### Reproduce
-A good starting point for a new Rust project
+Copy code
+cargo run
+When prompted, enter the name of the city and the country code for which you want to get the weather data. For example:
 
-To run: `cargo run -- marco --name "Marco"`
-Be careful to use the NAME of the project in the `Cargo.toml` to call `lib.rs` as in:
+yaml
+Copy code
+Enter the city name: New York
+Enter the country code: US
+The program will then make a request to the WeatherAPI service and print out the current temperature and weather condition for the specified location. If there is no weather data available for the specified location, the program will print out an error message.
 
-```
-[package]
-name = "hello"
-```
-
-For example, see the name `hello` is invoked alongside `marco_polo` which is in `lib.rs`.
-
-```rust
-fn main() {
-    let args = Cli::parse();
-    match args.command {
-        Some(Commands::Marco { name }) => {
-            println!("{}", hello::marco_polo(&name));
-        }
-        None => println!("No command was used"),
-    }
-}
-```
-
-This program prompts the user to enter the number of legs and heads, reads the input as a string, uses the trim method to remove any leading or trailing whitespace, and the parse method to convert the string to an unsigned 32-bit integer. Then it uses two nested loops to iterate through all possible values of x and y, checks if the equation for legs (4x + 2y = legs) is true for that pair of values and also checks if x+y equals to heads, if this condition is true, then it prints the number of rabbits and chickens and exits the function. If it doesn't find a valid pair of values, it prints "Invalid number of legs and heads: {} {}" with legs and heads as the arguments.
-
-
-
-
-
-
-
-## References
-
-* [rust-cli-template](https://github.com/kbknapp/rust-cli-template)
+Contributing
+If you find a bug or have a feature request, please open an issue on the GitHub repository. If you would like to contribute to the project, please fork the repository, make your changes, and submit a pull request.
