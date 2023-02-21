@@ -1,50 +1,49 @@
-use serde::Deserialize;
-use std::io::{self, Write};
-use reqwest;
+use std::io;
 
-#[derive(Deserialize, Debug)]
-struct CurrentWeatherResponse {
-    current: Option<CurrentWeather>,
-}
+fn main() {
+    loop {
+        println!("Enter an expression to calculate or q to quit:");
+        let mut input = String::new();
+        io::stdin().read_line(&mut input).expect("Failed to read line");
+        let input = input.trim();
 
-#[derive(Deserialize, Debug)]
-struct CurrentWeather {
-    temp_c: f32,
-    condition: Condition,
-}
-
-#[derive(Deserialize, Debug)]
-struct Condition {
-    text: String,
-}
-
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let api_key = "1519edbf82994ba980874948231502";
-    
-    // Take user input for city and country
-    print!("Enter the city name: ");
-    io::stdout().flush()?;
-    let mut city_name = String::new();
-    io::stdin().read_line(&mut city_name)?;
-    city_name = city_name.trim().to_string();
-    
-    print!("Enter the country code: ");
-    io::stdout().flush()?;
-    let mut country_code = String::new();
-    io::stdin().read_line(&mut country_code)?;
-    country_code = country_code.trim().to_string();
-
-    let url = format!("http://api.weatherapi.com/v1/current.json?key={}&q={},{}", api_key, city_name, country_code);
-    let response = reqwest::blocking::get(&url)?.json::<CurrentWeatherResponse>()?;
-
-    match response.current {
-        Some(weather) => {
-            println!("The current temperature in {} is {}°C, and the weather condition is {}.", city_name, weather.temp_c, weather.condition.text);
-        },
-        None => {
-            println!("No weather data found for the given location.");
+        if input == "q" {
+            break;
         }
-    }
 
-    Ok(())
+        let parts: Vec<&str> = input.split(' ').collect();
+        if parts.len() != 3 {
+            println!("Invalid input: Please enter an expression with two numbers and an operator separated by spaces.");
+            continue;
+        }
+
+        let a: f64 = match parts[0].parse() {
+            Ok(n) => n,
+            Err(_) => {
+                println!("Invalid input: {} is not a number", parts[0]);
+                continue;
+            }
+        };
+
+        let op = parts[1];
+        let b: f64 = match parts[2].parse() {
+            Ok(n) => n,
+            Err(_) => {
+                println!("Invalid input: {} is not a number", parts[2]);
+                continue;
+            }
+        };
+
+        let result = match op {
+            "+" => a + b,
+            "-" => a - b,
+            "*" => a * b,
+            "/" => a / b,
+            _ => {
+                println!("Invalid input: {} is not a valid operator", op);
+                continue;
+            }
+        };
+        println!("Result: {}", result);
+    }
 }
